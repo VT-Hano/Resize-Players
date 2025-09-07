@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class ArmorConfig {
     private static FileConfiguration armorConfig;
-    private static File file; // Thêm dòng này
+    private static File file;
 
     public static void setup() {
         file = new File(Objects.requireNonNull(Bukkit.getServer().getPluginManager().getPlugin("ResizePlayers")).getDataFolder(), "armor.yml");
