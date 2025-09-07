@@ -4,8 +4,6 @@ import nl.onys.resizeplayers.ResizePlayers;
 import nl.onys.resizeplayers.configs.PlayerData;
 import nl.onys.resizeplayers.utils.MessageUtils;
 import nl.onys.resizeplayers.utils.PlayerDataUtils;
-import nl.onys.resizeplayers.utils.ReachUtils;
-import nl.onys.resizeplayers.utils.ScaleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -13,6 +11,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -21,8 +20,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class PluginCommand implements CommandExecutor, TabCompleter {
+
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
         // Sorry I know this function is very messy
         if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
             MessageUtils.onHelpMessage(commandSender);
@@ -33,6 +33,7 @@ public class PluginCommand implements CommandExecutor, TabCompleter {
             if (commandSender.hasPermission("resizeplayers.reload") || commandSender.isOp()) {
                 ResizePlayers.getPlugin().reloadConfig();
                 PlayerData.reload();
+                nl.onys.resizeplayers.configs.ArmorConfig.reload();
                 PlayerDataUtils.reloadAllOnlinePlayersScaleAndReach();
                 MessageUtils.onConfigReloaded(commandSender);
             } else {
@@ -98,7 +99,7 @@ public class PluginCommand implements CommandExecutor, TabCompleter {
 
 
     @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
         if (args.length == 1) {
             List<String> completions = new ArrayList<>();
             if (commandSender.hasPermission("resizeplayers.reload")) {
@@ -120,4 +121,5 @@ public class PluginCommand implements CommandExecutor, TabCompleter {
         }
         return Collections.emptyList();
     }
+
 }

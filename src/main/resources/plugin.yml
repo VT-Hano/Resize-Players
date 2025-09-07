@@ -1,5 +1,5 @@
 name: ResizePlayers
-version: '2.1'
+version: '2.1.1'
 author: 0nys
 main: nl.onys.resizeplayers.ResizePlayers
 api-version: '1.21'
@@ -12,3 +12,7 @@ commands:
   resizeplayers:
     description: ResizePlayers commands
     usage: /resizeplayers
+  getresizeitem:
+    description: Get the resizing item.
+    usage: /getresizeitem
+    permission: resizeplayers.getitem

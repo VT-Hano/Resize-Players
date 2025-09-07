@@ -6,13 +6,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class PlayerData {
     private static File file;
     private static FileConfiguration playerData;
 
     public static void setup() {
-        file = new File(Bukkit.getServer().getPluginManager().getPlugin("ResizePlayers").getDataFolder(), "playerData.yml");
+        file = new File(Objects.requireNonNull(Bukkit.getServer().getPluginManager().getPlugin("ResizePlayers")).getDataFolder(), "playerData.yml");
         if (!file.exists()) {
             try {
                 file.createNewFile();

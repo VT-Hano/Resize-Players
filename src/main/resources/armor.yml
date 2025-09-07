@@ -1,0 +1,43 @@
+# Configuration for the resizing item
+special-armor:
+  enabled: true
+
+  # Minecraft item ID (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
+  item-id: "DIAMOND_HELMET"
+
+  # The display name of the item (supports '&' color codes)
+  display-name: "&b&lMagic Sizing Helmet"
+
+  # The lore of the item (each line is an element, supports '&' color codes)
+  lore:
+    - "&7A helmet imbued with strange magic."
+    - "&7"
+    - "&a&lSpecial Effect:"
+    - "&f- &eChanges the wearer's size."
+    - "&7"
+    - "&d&oA magical artifact!"
+
+  # Choose the resize mode. Options: "percentage" or "fixed".
+  # - "percentage": Shrinks the player by the 'resize-percentage' value.
+  # - "fixed": Sets the player's height to the 'fixed-height-in-blocks' value.
+  resize-mode: "percentage"
+
+  # The percentage to shrink the player by when worn (only used if resize-mode is "percentage").
+  # Example: 10 means the player will be shrunk by 10% (becoming 90% of their original size).
+  resize-percentage: 10
+
+  # The fixed height in blocks the player will be set to (only used if resize-mode is "fixed").
+  fixed-height-in-blocks: 1.0
+
+  # Message when the player's size is changed by the armor.
+  shrink-message: "&bYou feel your size changing!"
+
+  # Message when the player returns to their normal size.
+  unshrink-message: "&bYou've returned to your normal size!"
+
+# Configuration for the item-giving command
+command:
+  name: "getresizeitem"
+  description: "Get the item that can resize its wearer."
+  # Message sent on successful retrieval
+  success-message: "&aYou have received the &b&lMagic Sizing Helmet&a!"

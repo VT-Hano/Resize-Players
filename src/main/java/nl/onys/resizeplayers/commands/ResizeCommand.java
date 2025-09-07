@@ -1,6 +1,8 @@
 package nl.onys.resizeplayers.commands;
 
+import nl.onys.resizeplayers.listeners.ArmorListener;
 import nl.onys.resizeplayers.utils.MessageUtils;
+import nl.onys.resizeplayers.utils.PlayerDataUtils;
 import nl.onys.resizeplayers.utils.ScaleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -8,13 +10,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ResizeCommand implements CommandExecutor, TabCompleter {
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
         if (!(commandSender instanceof Player)) {
             MessageUtils.onOnlyPlayers(commandSender);
             return true;
@@ -36,12 +39,6 @@ public class ResizeCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-    /**
-     * Resize the command sender
-     * @param player The player to resize
-     * @param size The size to resize to in blocks
-     * @return True if the player was resized, false otherwise
-     */
     private boolean resizeSelf(Player player, String size) {
         if (!player.hasPermission("resizeplayers.scale.self") && !player.isOp()) {
             MessageUtils.onNoPermission(player, "resizeplayers.scale.self");
@@ -55,17 +52,11 @@ public class ResizeCommand implements CommandExecutor, TabCompleter {
         double scaleSize = sizes[1];
 
         ScaleUtils.setPlayerScale(player, scaleSize, true, true);
+        cancelArmorEffect(player);
         MessageUtils.onScaledSelf(player, blocksSize);
         return true;
     }
 
-    /**
-     * Resize another player
-     * @param player The player resizing the target
-     * @param size The size to resize to in blocks
-     * @param target The target player to resize
-     * @return True if the target was resized, false otherwise
-     */
     private boolean resizeOther(Player player, String size, String target) {
         if (!player.hasPermission("resizeplayers.scale.others") && !player.isOp()) {
             MessageUtils.onNoPermission(player, "resizeplayers.scale.others");
@@ -88,16 +79,11 @@ public class ResizeCommand implements CommandExecutor, TabCompleter {
         double scaleSize = sizes[1];
 
         ScaleUtils.setPlayerScale(targetPlayer, scaleSize, true, true);
+        cancelArmorEffect(targetPlayer);
         MessageUtils.onScaledOther(player, blocksSize, targetPlayer.getName());
         return true;
     }
 
-    /**
-     * Resize all players
-     * @param player The player resizing all players
-     * @param size The size to resize to in blocks
-     * @return True if all players were resized, false otherwise
-     */
     private boolean resizeAll(Player player, String size) {
         if (!player.hasPermission("resizeplayers.scale.all") && !player.isOp()) {
             MessageUtils.onNoPermission(player, "resizeplayers.scale.all");
@@ -116,17 +102,12 @@ public class ResizeCommand implements CommandExecutor, TabCompleter {
                 continue;
             }
             ScaleUtils.setPlayerScale(onlinePlayer, scaleSize, true, true);
+            cancelArmorEffect(onlinePlayer);
         }
         MessageUtils.onScaledAll(player, blocksSize);
         return true;
     }
 
-    /**
-     * Validate and convert the size to blocks and scale
-     * @param player The player resizing
-     * @param size The size to validate and convert
-     * @return The size in blocks and scale if valid, null otherwise
-     */
     private double[] validateAndConvertSize(Player player, String size) {
         if (!ScaleUtils.isValidSize(player, size)) {
             return null;
@@ -143,8 +124,15 @@ public class ResizeCommand implements CommandExecutor, TabCompleter {
         return new double[]{blocksSize, scaleSize};
     }
 
+    private void cancelArmorEffect(Player player) {
+        if (ArmorListener.isWearingSpecialArmor.getOrDefault(player.getUniqueId(), false)) {
+            PlayerDataUtils.savePreArmorHeight(player, null);
+            ArmorListener.isWearingSpecialArmor.put(player.getUniqueId(), false);
+        }
+    }
+
     @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
         switch (args.length) {
             case 1: {
                 String[] defaultOptions = {"0.5", "0.75", "1", "1.25", "1.5", "1.75", "2", "2.25", "2.5", "2.75", "3", "default"};
